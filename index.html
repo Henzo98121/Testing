@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
+    <title>BigLongs - Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Animated Background -->
+    <canvas id="bgCanvas"></canvas>
+
     <!-- Navigation -->
     <nav class="nav">
-        <div class="nav-logo">Portfolio</div>
+        <div class="nav-logo">BigLongs</div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -23,10 +30,13 @@
         <div class="hero-content">
             <h1 class="hero-title">
                 <span class="line">Hello, I'm</span>
-                <span class="line name">Your Name</span>
+                <span class="line name">BigLongs</span>
             </h1>
             <p class="hero-subtitle">Creative Developer & Designer</p>
-            <a href="#work" class="cta-button">View My Work</a>
+            <div class="hero-buttons">
+                <a href="#work" class="cta-button primary">View My Work</a>
+                <a href="#contact" class="cta-button secondary">Contact Me</a>
+            </div>
         </div>
         <div class="scroll-indicator">
             <span>Scroll</span>
@@ -111,17 +121,29 @@
                 opportunities to be part of your vision.
             </p>
             <div class="contact-links">
-                <a href="mailto:your.email@example.com" class="contact-link">Email</a>
-                <a href="https://github.com/yourusername" class="contact-link" target="_blank">GitHub</a>
-                <a href="https://linkedin.com/in/yourusername" class="contact-link" target="_blank">LinkedIn</a>
-                <a href="https://twitter.com/yourusername" class="contact-link" target="_blank">Twitter</a>
+                <a href="mailto:contact@biglongs.dev" class="contact-link">
+                    <span class="link-icon">✉</span>
+                    <span>Email</span>
+                </a>
+                <a href="https://github.com/biglongs" class="contact-link" target="_blank">
+                    <span class="link-icon">⚡</span>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://linkedin.com/in/biglongs" class="contact-link" target="_blank">
+                    <span class="link-icon">◆</span>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://twitter.com/biglongs" class="contact-link" target="_blank">
+                    <span class="link-icon">●</span>
+                    <span>Twitter</span>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <p>&copy; 2024 Your Name. All rights reserved.</p>
+        <p>&copy; 2024 BigLongs. Crafted with precision.</p>
     </footer>
 
     <!-- GSAP Library -->

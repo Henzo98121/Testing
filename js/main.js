@@ -3,6 +3,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Initialize animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    initCustomCursor();
+    initBackgroundCanvas();
     initNavAnimation();
     initHeroAnimation();
     initScrollIndicator();
@@ -10,6 +12,141 @@ document.addEventListener('DOMContentLoaded', () => {
     initProjectAnimations();
     initSmoothScroll();
 });
+
+// Custom cursor
+function initCustomCursor() {
+    const cursor = document.querySelector('.cursor');
+    const cursorFollower = document.querySelector('.cursor-follower');
+
+    if (!cursor || !cursorFollower) return;
+
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    let followerX = 0, followerY = 0;
+
+    // Update mouse position
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    // Animate cursor
+    function animateCursor() {
+        // Cursor follows immediately
+        cursorX += (mouseX - cursorX) * 0.3;
+        cursorY += (mouseY - cursorY) * 0.3;
+
+        // Follower has delay
+        followerX += (mouseX - followerX) * 0.1;
+        followerY += (mouseY - followerY) * 0.1;
+
+        cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+        cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px)`;
+
+        requestAnimationFrame(animateCursor);
+    }
+
+    animateCursor();
+
+    // Expand cursor on hover
+    const hoverElements = document.querySelectorAll('a, button, .project-card');
+    hoverElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) scale(1.5)`;
+            cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px) scale(1.5)`;
+        });
+
+        el.addEventListener('mouseleave', () => {
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) scale(1)`;
+            cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px) scale(1)`;
+        });
+    });
+}
+
+// Animated background canvas
+function initBackgroundCanvas() {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    // Particle system
+    const particles = [];
+    const particleCount = 50;
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.radius = Math.random() * 2 + 1;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+
+            if (this.x < 0 || this.x > width) this.vx *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.fill();
+        }
+    }
+
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+
+    // Draw connections
+    function drawConnections() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 150) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.15 * (1 - distance / 150)})`;
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+
+        drawConnections();
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+}
 
 // Navigation animation on scroll
 function initNavAnimation() {
@@ -42,11 +179,12 @@ function initHeroAnimation() {
         opacity: 0,
         duration: 0.8
     }, '-=0.6')
-    // Animate CTA button
+    // Animate CTA buttons
     .from('.cta-button', {
         y: 30,
         opacity: 0,
-        duration: 0.8
+        duration: 0.8,
+        stagger: 0.15
     }, '-=0.4')
     // Animate scroll indicator
     .from('.scroll-indicator', {
